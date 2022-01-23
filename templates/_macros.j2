@@ -1,0 +1,25 @@
+{% macro option(key, val) %}
+{%   if key == '__main__' %}
+"{{ val }}"
+{%-   else %}
+{%     if val is string and not(val in dont_quote or key in syslogng_dont_quote_keys)%}
+{%       set val = '\"' + val + '\"' %}
+{%     elif val is sameas true %}
+{%       set val = 'yes' %}
+{%     elif val is sameas false %}
+{%       set val = 'no' %}
+{%     endif %}
+{{ key }}({{ val }})
+{%-   endif %}
+{% endmacro %}
+
+{% macro options(options, indent=2) %}
+{%   if '__main__' in options.keys() %}
+{{ option(key='__main__', val=options['__main__']) | indent(indent, True) }}
+{%   endif %}
+{%   for key, val in options.items() %}
+{%     if key != '__main__' %}
+{{ option(key=key, val=val) | indent(indent, True) }}
+{%     endif%}
+{%   endfor %}
+{% endmacro %}

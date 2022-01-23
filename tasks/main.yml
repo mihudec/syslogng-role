@@ -1,0 +1,46 @@
+---
+- name: Create Config Dir
+  ansible.builtin.file:
+    path: "{{ config_dir }}"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: "{{ mode }}"
+    state: directory
+  loop: "{{ syslogng_instances | dict2items }}"
+  loop_control:
+    label: "{{ instance_id }}"
+  vars:
+    instance_id: "{{ item.key }}"
+    syslogng_instance: "{{ item.value }}"
+    config_dir: "{{ syslogng_instance.config_dir | default(syslogng_config_dir) }}"
+    owner: "{{ syslogng_instance.config_dir_owner | default(syslogng_config_dir_owner) }}"
+    group: "{{ syslogng_instance.config_dir_group | default(syslogng_config_dir_group) }}"
+    mode: "{{ syslogng_instance.config_dir_mode | default(syslogng_config_dir_mode) }}"
+  
+
+- name: Template Instance Config
+  ansible.builtin.template:
+    src: 'syslog-ng.conf.j2'
+    dest: "{{ config_dir }}/{{ config_filename }}"
+    owner: "{{ owner }}"
+    group: "{{ group }}"
+    mode: "{{ mode }}"
+    backup: true
+  loop: "{{ syslogng_instances | dict2items }}"
+  loop_control:
+    label: "{{ instance_id }}"
+  register: syslogng_config_template_result
+  vars:
+    instance_id: "{{ item.key }}"
+    syslogng_instance: "{{ item.value }}"
+    config_dir: "{{ syslogng_instance.config_dir | default(syslogng_config_dir) }}"
+    config_filename: "{{ syslogng_instance.config_file_name | default(syslogng_config_file_name) }}"
+    owner: "{{ syslogng_instance.config_file_owner | default(syslogng_config_file_owner) }}"
+    group: "{{ syslogng_instance.config_file_group | default(syslogng_config_file_group) }}"
+    mode: "{{ syslogng_instance.config_file_mode | default(syslogng_config_file_mode) }}"
+    _sources: "{{ syslogng_instance.sources | default([]) | json_query(syslogng_name_jmespath) | list}}" 
+    _destinations: "{{ syslogng_instance.destinations | default([]) | json_query(syslogng_name_jmespath) | list }}"
+    _filters: "{{ syslogng_instance.filters | default([]) | json_query(syslogng_name_jmespath) | list}}"
+    _templates: "{{ syslogng_instance.templates | default([]) | json_query(syslogng_name_jmespath) | list}}"
+    dont_quote: "{{ syslogng_dont_quote_values + _sources + _destinations + _filters + _templates }}"
+  notify: restart_syslogng

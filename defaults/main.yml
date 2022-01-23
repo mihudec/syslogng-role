@@ -1,0 +1,35 @@
+---
+syslogng_containerized: false
+syslogng_container_name: Null
+syslogng_config_dir: '/etc/syslog-ng'
+syslogng_config_dir_owner: root
+syslogng_config_dir_group: root
+syslogng_config_dir_mode: '0640'
+syslogng_config_file_name: 'syslog-ng.conf'
+syslogng_config_file_owner: root
+syslogng_config_file_group: root
+syslogng_config_file_mode: '0640'
+
+
+syslogng_options:
+  chain_hostnames: no
+  flush_lines: 0
+  use_dns: no
+  use_fqdn: no
+  dns_cache: no
+  owner: root
+  group: adm
+  perm: '0640'
+  stats_freq: 0
+  bad_hostname: "^gconfd$"
+  frac_digits: 3
+  ts_format: iso
+syslogng_templates: []
+syslogng_filters: []
+syslogng_sources: []
+syslogng_destinations: []
+syslogng_logs: []
+
+
+syslogng_name_jmespath: '[*].name'
+

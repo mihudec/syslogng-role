@@ -1,0 +1,54 @@
+{% if syslogng_instance | default(none) is not none %}
+{% from '_macros.j2' import option with context %}
+{% from '_macros.j2' import options with context %}
+@version: {{ syslogng_instance.version | default(syslogng_version) }}
+### Global options ###
+options {
+{%   for key, val in (syslogng_instance.syslogng_options | default(syslogng_options)).items() %}
+{{ option(key=key, val=val) | indent(2, True) }};
+{%   endfor %}
+};
+####################
+# Sources
+####################
+{% for source in syslogng_instance.sources | default([]) %}
+source {{ source.name }} {
+{{ source.plugin | indent(2, True) }}(
+{{ options(options=source.options | default({}), indent=4) }}
+{{ ')' | indent(2, True) }};
+};
+{% endfor %}
+####################
+# Templates
+####################
+{% for template in syslogng_instance.templates | default([]) %}
+template {{ template.name }} {
+{{ template.plugin | indent(2, True) }}(
+{{ options(options=template.options | default({}), indent=4) -}}
+{{ ')' | indent(2, True) }};
+};
+{% endfor %}
+
+####################
+# Destinations
+####################
+{% for destination in syslogng_instance.destinations | default([]) %}
+destination {{ destination.name }} {
+{{ destination.plugin | indent(2, True) }}(
+{{ options(options=destination.options | default({}), indent=4) -}}
+{{ ')' | indent(2, True) }};
+};
+{% endfor %}
+
+####################
+# Logs
+####################
+{% for log in syslogng_instance.logs | default([]) %}
+log {
+{{ options(options=log.options | default({}), indent=2) -}}
+};
+{% endfor %}
+
+
+
+{% endif %}

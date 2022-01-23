@@ -1,0 +1,36 @@
+---
+- name: Restart Syslog-NG Container
+  community.docker.docker_container:
+    name: "{{ container_name }}"
+    state: started
+    restart: true
+  loop: "{{ syslogng_config_template_result.results }}"
+  loop_control:
+    label: "{{ instance_id }}"
+  vars:
+    instance_id: "{{ item.item.key }}"
+    changed: "{{ item.changed }}"
+    instance_containerized: "{{ item.item.value.containerized | default(syslogng_containerized) }}"
+    container_name: "{{ item.item.value.container_options.name | default(none) }}"
+  when:
+    - changed
+    - instance_containerized
+    - container_name is not none
+  listen: restart_syslogng
+
+- name: Restart Syslog-NG Service
+  service:
+    name: syslog-ng.service
+    state: restarted
+  loop: "{{ syslogng_config_template_result.results }}"
+  loop_control:
+    label: "{{ instance_id }}"
+  vars:
+    instance_id: "{{ item.item.key }}"
+    changed: "{{ item.changed }}"
+    instance_containerized: "{{ item.item.value.containerized | default(syslogng_containerized) }}"
+  when:
+    - changed
+    - not instance_containerized
+  listen: restart_syslogng
+
