@@ -16,6 +16,7 @@
     - changed
     - instance_containerized
     - container_name is not none
+    - syslogng_hadle_service_restart
   listen: restart_syslogng
 
 - name: Restart Syslog-NG Service
@@ -32,5 +33,6 @@
   when:
     - changed
     - not instance_containerized
+    - syslogng_hadle_service_restart
   listen: restart_syslogng
 

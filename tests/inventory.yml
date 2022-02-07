@@ -7,27 +7,27 @@ all:
           name: syslog-ng
           config_dir_mode: '0777'
           config_file_mode: '0777'
-          sources:
-            - name: s_network
-              plugin: default-network-drivers
-              options: {}
-          templates:
-            - name: t_generic
-              plugin: template
-              options:
-                __main__: "${ISODATE} host=${HOST} level=${LEVEL} ${MSGHDR}${MESSAGE}\\n"
-          destinations:
-            - name: d_network
-              plugin: file
-              options:
-                __main__: "/var/log/netlog.log"
-                owner: root
-          
-          logs:
-            - options:
-                source: s_network
-                template: t_generic
-                destination: d_network
+          config:
+            sources:
+              - name: s_network
+                plugin: default-network-drivers
+                options: {}
+            templates:
+              - name: t_generic
+                plugin: template
+                options:
+                  __main__: "${ISODATE} host=${HOST} level=${LEVEL} ${MSGHDR}${MESSAGE}\\n"
+            destinations:
+              - name: d_network
+                plugin: file
+                options:
+                  __main__: "/var/log/netlog.log"
+                  owner: root
+            logs:
+              - options:
+                  source: s_network
+                  template: t_generic
+                  destination: d_network
         syslog_ng_2:
           name: syslog-ng_2
           config_dir_mode: '0777'
@@ -36,27 +36,27 @@ all:
           containerized: true
           container_options:
             name: syslog-ng_2
-          sources:
-            - name: s_network
-              plugin: default-network-drivers
-              options: {}
-          templates:
-            - name: t_generic
-              plugin: template
-              options:
-                __main__: "${ISODATE} host=${HOST} level=${LEVEL} ${MSGHDR}${MESSAGE}\\n"
-          destinations:
-            - name: d_network
-              plugin: file
-              options:
-                __main__: "/var/log/netlog.log"
-                owner: root
-          
-          logs:
-            - options:
-                source: s_network
-                template: t_generic
-                destination: d_network
+          config:
+            sources:
+              - name: s_network
+                plugin: default-network-drivers
+                options: {}
+            templates:
+              - name: t_generic
+                plugin: template
+                options:
+                  __main__: "${ISODATE} host=${HOST} level=${LEVEL} ${MSGHDR}${MESSAGE}\\n"
+            destinations:
+              - name: d_network
+                plugin: file
+                options:
+                  __main__: "/var/log/netlog.log"
+                  owner: root
+            logs:
+              - options:
+                  source: s_network
+                  template: t_generic
+                  destination: d_network
 
   vars:
     ansible_user: mhudec

@@ -10,6 +10,8 @@ syslogng_config_file_owner: root
 syslogng_config_file_group: root
 syslogng_config_file_mode: '0640'
 
+syslogng_backup_config: true
+syslogng_hadle_service_restart: true
 
 syslogng_options:
   chain_hostnames: no

@@ -3,6 +3,9 @@
   remote_user: root
   roles:
     - name: "mihudec.syslogng-role"
+      vars:
+        syslogng_backup_config: false
+        syslogng_hadle_service_restart: false
 
   tasks:
     - name: Assert Configs 

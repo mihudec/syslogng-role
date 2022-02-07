@@ -25,7 +25,7 @@
     owner: "{{ owner }}"
     group: "{{ group }}"
     mode: "{{ mode }}"
-    backup: true
+    backup: "{{ syslogng_backup_config }}"
   loop: "{{ syslogng_instances | dict2items }}"
   loop_control:
     label: "{{ instance_id }}"
@@ -38,9 +38,9 @@
     owner: "{{ syslogng_instance.config_file_owner | default(syslogng_config_file_owner) }}"
     group: "{{ syslogng_instance.config_file_group | default(syslogng_config_file_group) }}"
     mode: "{{ syslogng_instance.config_file_mode | default(syslogng_config_file_mode) }}"
-    _sources: "{{ syslogng_instance.sources | default([]) | json_query(syslogng_name_jmespath) | list}}" 
-    _destinations: "{{ syslogng_instance.destinations | default([]) | json_query(syslogng_name_jmespath) | list }}"
-    _filters: "{{ syslogng_instance.filters | default([]) | json_query(syslogng_name_jmespath) | list}}"
-    _templates: "{{ syslogng_instance.templates | default([]) | json_query(syslogng_name_jmespath) | list}}"
+    _sources: "{{ syslogng_instance.config.sources | default([]) | json_query(syslogng_name_jmespath) | list}}" 
+    _destinations: "{{ syslogng_instance.config.destinations | default([]) | json_query(syslogng_name_jmespath) | list }}"
+    _filters: "{{ syslogng_instance.config.filters | default([]) | json_query(syslogng_name_jmespath) | list}}"
+    _templates: "{{ syslogng_instance.config.templates | default([]) | json_query(syslogng_name_jmespath) | list}}"
     dont_quote: "{{ syslogng_dont_quote_values + _sources + _destinations + _filters + _templates }}"
   notify: restart_syslogng
