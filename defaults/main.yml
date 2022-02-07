@@ -26,6 +26,7 @@ syslogng_options:
   bad_hostname: "^gconfd$"
   frac_digits: 3
   ts_format: iso
+syslogng_include: []
 syslogng_templates: []
 syslogng_filters: []
 syslogng_sources: []

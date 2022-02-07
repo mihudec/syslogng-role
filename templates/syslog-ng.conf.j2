@@ -1,13 +1,18 @@
 {% if syslogng_instance | default(none) is not none %}
 {% from '_macros.j2' import option with context %}
 {% from '_macros.j2' import options with context %}
-@version: {{ syslogng_instance.version | default(syslogng_version) }}
+@version: {{ syslogng_instance.config.version | default(syslogng_version) }}
+{% for i in syslogng_instance.config.include | default(syslogng_include) %}
+@include "{{ i }}"
+{% endfor %}
+
 ### Global options ###
 options {
 {%   for key, val in (syslogng_instance.config.options | default(syslogng_options)).items() %}
 {{ option(key=key, val=val) | indent(2, True) }};
 {%   endfor %}
 };
+
 ####################
 # Sources
 ####################
@@ -18,6 +23,7 @@ source {{ source.name }} {
 {{ ')' | indent(2, True) }};
 };
 {% endfor %}
+
 ####################
 # Templates
 ####################
@@ -45,7 +51,9 @@ destination {{ destination.name }} {
 ####################
 {% for log in syslogng_instance.config.logs | default([]) %}
 log {
-{{ options(options=log.options | default({}), indent=2) -}}
+{%   for key, val in (log.options | default({})).items() %}
+{{ option(key=key, val=val) | indent(2, True) }};
+{%   endfor %}
 };
 {% endfor %}
 

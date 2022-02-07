@@ -1,5 +1,5 @@
 ---
-syslogng_version: '3.29'
+syslogng_version: '3.28'
 syslogng_dont_quote_values:
   - rfc3164 
   - bsd
